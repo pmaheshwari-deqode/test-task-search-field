@@ -27,6 +27,7 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
   const [noResults, showNoResults] = useState(false);
 
   const shouldOpenDropdown = () => {
+    // Checking whether dropdown should be open by default
     if (dropdownOptions.length && !isLoading) {
       setOpenDropdown(true);
       showNoResults(false);
@@ -39,6 +40,7 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
   useEffect(shouldOpenDropdown, [dropdownOptions, isLoading]);
 
   const getLastStr = (str = searchInput) => {
+    // Fetching last string
     const values = str.split(" ").filter(opt => Boolean(opt));
     return values[values.length - 1];
   }
@@ -56,6 +58,7 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
         options={dropdownOptions}
         loading={isLoading}
         onChange={(event, value) => {
+          // Adding space to the end of the selected
           let values = searchInput.split(" ").filter(opt => Boolean(opt));
           values[values.length - 1] = value;
           const val = value ? values.join(" ") + " " : "";
@@ -63,6 +66,7 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
           if (!Boolean(value) && noResults) showNoResults(false);
         }}
         renderOption={option => {
+          // Highlighting matching sub-string
           const [before, after] = option.split(lastSearchedStr);
           return (
             <span>

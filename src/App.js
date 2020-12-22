@@ -9,20 +9,25 @@ function App() {
   const [lastSearchedStr, setLastSearchedStr] = useState("");
 
   const postSearchActions = (str = "") => {
+    // Actions to be performed either on success or error of data fetching.
+    // Updating last searched string and isFetching option.
     setLastSearchedStr(str);
     setFetching(false);
   }
 
   const searchHandler = _.debounce(value => {
     setOptions([]);
+    // Fetching data for the latest string
     if (value !== "") {
       setFetching(true);
       getSuggestions(value).then(
         results => {
+          // Success
           setOptions(results);
           postSearchActions(value);
         },
         err => {
+          // Error
           console.error("There was some error while fetching results.");
           postSearchActions(value);
         }
