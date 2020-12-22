@@ -1,23 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import _ from "lodash";
+import { getSuggestions } from "./mockServer";
+import SearchField from "./components/SearchField/SearchField";
 
 function App() {
+  const [options, setOptions] = useState([]);
+  const [isFetching, setFetching] = useState(false);
+  const [lastSearchedStr, setLastSearchedStr] = useState("");
+
+  const postSearchActions = (str = "") => {
+    setLastSearchedStr(str);
+    setFetching(false);
+  }
+
+  const searchHandler = _.debounce(value => {
+    setOptions([]);
+    if (value !== "") {
+      setFetching(true);
+      getSuggestions(value).then(
+        results => {
+          setOptions(results);
+          postSearchActions(value);
+        },
+        err => {
+          console.error("There was some error while fetching results.");
+          postSearchActions(value);
+        }
+      );
+    }
+  }, 500);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <SearchField
+        searchHandler={searchHandler}
+        isLoading={isFetching}
+        dropdownOptions={options}
+        lastSearchedStr={lastSearchedStr}
+      />
     </div>
   );
 }
