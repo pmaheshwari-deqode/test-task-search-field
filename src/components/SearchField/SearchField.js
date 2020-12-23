@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import _ from "lodash";
+import { noop } from "lodash";
 import PropTypes from "prop-types";
 import { TextField, makeStyles } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -108,7 +108,7 @@ SearchField.propTypes = {
 };
 
 SearchField.defaultProps = {
-  searchHandler: _.noop(),
+  searchHandler: noop(),
   dropdownOptions: [],
   isLoading: false,
   lastSearchedStr: ""
