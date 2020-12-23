@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { debounce } from "lodash";
 import { getSuggestions } from "../../mockServer";
 import SearchField from "../SearchField";
@@ -7,12 +7,6 @@ const AutoSuggestSearchField = () => {
   const [options, setOptions] = useState([]);
   const [isFetching, setFetching] = useState(false);
   const [lastSearchedStr, setLastSearchedStr] = useState("");
-  const debounceRef = useRef();
-
-  useEffect(() => {
-    // Storing debounce function
-    debounceRef.current = debounce(fetchData, 500);
-  }, []);
 
   const postSearchActions = (str = "") => {
     // Actions to be performed either on success or error of data fetching.
@@ -35,14 +29,13 @@ const AutoSuggestSearchField = () => {
       }
     );
   }
-
-  // const debouncedDataFetching = debounce(fetchData, 500);
+  const debounceFunc = useCallback(debounce(fetchData, 500), []);
 
   const searchHandler = (value = "") => {
     setOptions([]);
     if (value !== ""){
       setFetching(true);
-      debounceRef.current(value);
+      debounceFunc(value);
     }
   };
 
