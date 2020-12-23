@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import _ from "lodash";
+import { debounce } from "lodash";
 import { getSuggestions } from "./mockServer";
 import SearchField from "./components/SearchField/SearchField";
 
@@ -15,25 +15,30 @@ function App() {
     setFetching(false);
   }
 
-  const searchHandler = _.debounce(value => {
+  const fetchData = (value) => {
+    getSuggestions(value).then(
+      results => {
+        // Success
+        setOptions(results);
+        postSearchActions(value);
+      },
+      err => {
+        // Error
+        console.error("There was some error while fetching results.");
+        postSearchActions(value);
+      }
+    );
+  }
+
+  const debouncedDataFetching = debounce(fetchData, 500);
+
+  const searchHandler = (value) => {
     setOptions([]);
-    // Fetching data for the latest string
-    if (value !== "") {
+    if (value !== ""){
       setFetching(true);
-      getSuggestions(value).then(
-        results => {
-          // Success
-          setOptions(results);
-          postSearchActions(value);
-        },
-        err => {
-          // Error
-          console.error("There was some error while fetching results.");
-          postSearchActions(value);
-        }
-      );
+      debouncedDataFetching(value);
     }
-  }, 500);
+  };
 
   return (
     <div>
