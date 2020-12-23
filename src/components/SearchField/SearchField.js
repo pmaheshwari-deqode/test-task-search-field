@@ -53,7 +53,6 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
         onOpen={() => setOpenDropdown(true)}
         value={searchInput}
         getOptionSelected={(option, value) => option === value}
-        getOptionLabel={option => option}
         popupIcon={null}
         options={dropdownOptions}
         loading={isLoading}
@@ -63,6 +62,7 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
           values[values.length - 1] = value;
           const val = value ? values.join(" ") + " " : "";
           setSearchInput(val);
+          if (!Boolean(val)) searchHandler("");
           if (!Boolean(value) && noResults) showNoResults(false);
         }}
         renderOption={option => {

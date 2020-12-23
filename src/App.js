@@ -32,7 +32,7 @@ function App() {
 
   const debouncedDataFetching = debounce(fetchData, 500);
 
-  const searchHandler = (value) => {
+  const searchHandler = (value = "") => {
     setOptions([]);
     if (value !== ""){
       setFetching(true);
