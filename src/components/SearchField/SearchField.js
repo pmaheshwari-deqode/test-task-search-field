@@ -24,6 +24,7 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
   const classes = useStyles();
   const [openDropDown, setOpenDropdown] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [prevInput, setPrevInput] = useState("");
   const [noResults, showNoResults] = useState(false);
 
   const shouldOpenDropdown = () => {
@@ -62,6 +63,7 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
           values[values.length - 1] = value;
           const val = value ? values.join(" ") + " " : "";
           setSearchInput(val);
+          setPrevInput(val);
           if (!Boolean(val)) searchHandler("");
           if (!Boolean(value) && noResults) showNoResults(false);
         }}
@@ -83,7 +85,11 @@ const SearchField = ({ searchHandler, dropdownOptions, isLoading, lastSearchedSt
             variant="outlined"
             onChange={({ target }) => {
               setSearchInput(target.value);
-              searchHandler(getLastStr(target.value));
+              setPrevInput(target.value);
+              const last = getLastStr(target.value);
+              if (getLastStr(prevInput) !== last) searchHandler(getLastStr(target.value));
+              else setOpenDropdown(false)
+              setPrevInput(target.value);
             }}
             InputProps={{
               ...params.InputProps
